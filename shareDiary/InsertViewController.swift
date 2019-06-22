@@ -44,8 +44,6 @@ class InsertViewController: UIViewController {
         object.setValue(textdiary.text, forKey: "content")
         object.setValue(textdate.text, forKey: "date")
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        //appDelegate.diarysear.append(texttitle.text!)
         
         do {
             try context.save()

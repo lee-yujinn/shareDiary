@@ -17,9 +17,10 @@ class PdiaryTableViewController: UITableViewController, UISearchResultsUpdating 
     var resultSearchController = UISearchController()
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    @IBOutlet var ser: UITableView!
     
     override func viewDidLoad() {
+        
+        self.tableView.reloadData()
         super.viewDidLoad()
         
         diarysear.removeAll()
@@ -33,7 +34,7 @@ class PdiaryTableViewController: UITableViewController, UISearchResultsUpdating 
         }
         catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)") }
-        
+        self.tableView.reloadData()
         
         resultSearchController = ({
             let controller = UISearchController(searchResultsController: nil)
@@ -49,10 +50,29 @@ class PdiaryTableViewController: UITableViewController, UISearchResultsUpdating 
         // Reload the table
         self.tableView.reloadData()
         
+       
         for i in 0...diary.count-1{
             diarysear.append(diary[i].value(forKey: "title") as! String)
         }
+        
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let context = self.getContext()
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Diary")
+        let sortDescriptor = NSSortDescriptor (key: "date", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        do {
+            diary = try context.fetch(fetchRequest)
+        }
+        catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)") }
+        self.tableView.reloadData()
+        
+    }
+    
     func updateSearchResults(for searchController: UISearchController) {
         filteredTableData.removeAll(keepingCapacity: false)
         
